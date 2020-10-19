@@ -1,20 +1,40 @@
 ﻿using FileHelpers;
 using System;
+using System.IO;
 using System.Threading;
 
 namespace YAZABNET
 {
     class Program
     {
+        static string GetVersionString()
+        {
+            System.Reflection.Assembly assembly = System.Reflection.Assembly.GetExecutingAssembly();
+            System.Diagnostics.FileVersionInfo fvi = System.Diagnostics.FileVersionInfo.GetVersionInfo(assembly.Location);
+            return fvi.FileVersion;
+        }
+
         static void Main(string[] args)
         {
-            const string versionString = "0.0.1";
-
             Console.WriteLine("Zoom autojoin bot by SnakePin, this time made with .NET!");
-            Console.WriteLine("Version: " + versionString);
+            Console.WriteLine("Version: " + GetVersionString());
 
-            Console.WriteLine("Enter CSV file path: ");
-            var csvFilePath = Console.ReadLine();
+            string csvFilePath;
+            if (args.Length >= 1 && !string.IsNullOrWhiteSpace(args[0]))
+            {
+                csvFilePath = args[0];
+            }
+            else
+            {
+                Console.WriteLine("Enter CSV file path: ");
+                csvFilePath = Console.ReadLine(); ;
+            }
+
+            if(!File.Exists(csvFilePath))
+            {
+                Console.WriteLine("Invalid file path specified!");
+                return;
+            }
 
             var engine = new FileHelperEngine<ScheduleEntry>();
             engine.BeforeReadRecord += new FileHelpers.Events.BeforeReadHandler<ScheduleEntry>(
