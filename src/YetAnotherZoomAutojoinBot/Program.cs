@@ -48,10 +48,10 @@ namespace YAZABNET
             {
                 foreach (var schedule in result)
                 {
-                    //0 to the 6 starting from Monday
-                    int day = ((DateTime.Now.DayOfWeek == DayOfWeek.Sunday) ? 7 : (int)DateTime.Now.DayOfWeek) - 1;
+                    //1 to the 7 starting from Monday
+                    int day = (DateTime.Now.DayOfWeek == DayOfWeek.Sunday) ? 7 : (int)DateTime.Now.DayOfWeek;
 
-                    if ((schedule.DaysInteger & (1 << day)) != 0)
+                    if (schedule.DayOfWeek == day)
                     {
                         DateTime meetingStartDate = DateTime.Today + Utils.TimeSpanFrom24HString(schedule.TimeIn24H);
                         DateTime meetingEndDate = meetingStartDate + TimeSpan.FromSeconds(schedule.MeetingTimeInSeconds);
@@ -82,7 +82,7 @@ namespace YAZABNET
     [IgnoreFirst()]
     public class ScheduleEntry
     {
-        public int DaysInteger;
+        public int DayOfWeek;
         public string TimeIn24H;
 
         public string MeetingID;
